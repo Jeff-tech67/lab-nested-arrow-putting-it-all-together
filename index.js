@@ -1,45 +1,34 @@
+/**
+ * Creates a login tracker for a specific user.
+ * Uses closures to keep track of login attempts.
+ *
+ * @param {Object} userInfo - User credentials
+ * @param {string} userInfo.username
+ * @param {string} userInfo.password
+ * @returns {Function} login attempt handler
+ */
+const createLoginTracker = (userInfo) => {
+  let attemptCount = 0; // tracks login attempts (closure)
 
+  // Inner arrow function
+  return (passwordAttempt) => {
+    // If account already locked
+    if (attemptCount >= 3) {
+      return 'Account locked due to too many failed login attempts';
+    }
 
+    attemptCount++;
 
-// module.exports = {
-//   ...(typeof createLoginTracker !== 'undefined' && { createLoginTracker })
-// };
+    // Check password
+    if (passwordAttempt === userInfo.password) {
+      return 'Login successful';
+    }
 
+    // Failed attempt (within limit)
+    return `Attempt ${attemptCount}: Login failed`;
+  };
+};
 
-// Step 1: Define the outer function
-function createLoginTracker(userInfo) {
-    // initialize attempt counter
-    let attemptCount = 0;
-
-    // Step 2: Define and return the inner arrow function
-    const attemptLogin = (passwordAttempt) => {
-        // increment attempts every time function is called
-        attemptCount++;
-
-        // If attempts exceed 3 ,lock account
-        if (attemptCount > 3) {
-            return "Account locked due to too many failed login attempts";
-        }
-
-        // Check if entered password matches
-        if (passwordAttempt === userInfo.password) {
-            return "Login successful";
-        } else {
-            return `Attempt ${attemptCount}: Login failed`;
-        }
-    };
-
-    // return the inner function (closure)
-    return attemptLogin;
-}
-
-const Jeff = createLoginTracker({
-    username: "Jeff",
-    password: "12345678"
-    
-  });
-
-  console.log(Jeff("helloworld"));
-  console.log(Jeff("kjbilhb"))
-  console.log(Jeff("12345678"))
-  console.log(Jeff("kyky"))
+module.exports = {
+  createLoginTracker
+};
